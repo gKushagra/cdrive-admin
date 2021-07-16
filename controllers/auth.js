@@ -31,14 +31,50 @@ async function loginController(data) {
     } catch (error) {
         throw new Error(error);
     }
-    
+
     if (queryResult && queryResult.email) {
         // check password
         let isPassValid = await compareHash(data.password, queryResult.password);
         if (isPassValid) {
-            return { user: queryResult, token: await genToken(data.email) }
+            return {
+                user: {
+                    userId: queryResult.userId,
+                    name: queryResult.name,
+                    email: queryResult.email,
+                    joinDate: queryResult.joinDate,
+                    admin: queryResult.admin
+                },
+                token: await genToken(data.email)
+            }
         } else {
             return null;
+        }
+    } else {
+        return null;
+    }
+}
+
+/** Refresh Token */
+async function refreshTokenController(data) {
+    try {
+        var queryResult = await execQuery(
+            getUserQuery,
+            [data],
+        );
+    } catch (error) {
+        throw new Error(error);
+    }
+
+    if (queryResult && queryResult.email) {
+        return {
+            user: {
+                userId: queryResult.userId,
+                name: queryResult.name,
+                email: queryResult.email,
+                joinDate: queryResult.joinDate,
+                admin: queryResult.admin
+            },
+            token: await genToken(data)
         }
     } else {
         return null;
@@ -74,4 +110,5 @@ async function resetPasswordController(data) {
 module.exports = {
     loginController,
     resetPasswordController,
+    refreshTokenController,
 }

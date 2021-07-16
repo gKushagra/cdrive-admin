@@ -12,6 +12,7 @@ const {
 const {
     loginController,
     resetPasswordController,
+    refreshTokenController,
 } = require('../controllers/auth');
 
 /* POST login a new user */
@@ -38,6 +39,21 @@ router.post('/reset-auth', async function (req, res, next) {
             res.status(200).send(msg);
         else
             res.status(200).send("no-account");
+    } catch (e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
+/* GET reset password */
+router.get('/refresh-token', verifyToken, async function (req, res, next) {
+    let data = req.user;
+    try {
+        let user = await refreshTokenController(data);
+        if (user)
+            res.status(200).json(user);
+        else
+            res.status(200).send("unauthorized");
     } catch (e) {
         console.log(e);
         res.sendStatus(500);
