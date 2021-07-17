@@ -1,3 +1,5 @@
 /node_modules
 /nbproject
+/dist
 .env
+webpack.config.js
