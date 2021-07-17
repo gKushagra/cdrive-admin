@@ -23,7 +23,7 @@ router.post('/login', async function (req, res, next) {
         if (user)
             res.status(200).json(user);
         else
-            res.status(200).send("unauthorized");
+            res.status(200).json("unauthorized");
     } catch (e) {
         console.log(e);
         res.sendStatus(500);
@@ -36,9 +36,9 @@ router.post('/reset-auth', async function (req, res, next) {
     try {
         let msg = await resetPasswordController(data);
         if (msg === 'updated')
-            res.status(200).send(msg);
+            res.status(200).json(msg);
         else
-            res.status(200).send("no-account");
+            res.status(200).json("no-account");
     } catch (e) {
         console.log(e);
         res.sendStatus(500);
@@ -76,7 +76,8 @@ router.post('/user', verifyToken, async function (req, res, next) {
     let data = req.body;
     try {
         let msg = await addNewUserController(data);
-        res.status(200).send(msg);
+        console.log(msg);
+        res.status(200).json(msg);
     } catch (e) {
         console.log(e);
         res.sendStatus(500);

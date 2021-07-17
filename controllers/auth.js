@@ -32,17 +32,17 @@ async function loginController(data) {
         throw new Error(error);
     }
 
-    if (queryResult && queryResult.email) {
+    if (queryResult[0] && queryResult[0].email) {
         // check password
-        let isPassValid = await compareHash(data.password, queryResult.password);
+        let isPassValid = await compareHash(data.password, queryResult[0].password);
         if (isPassValid) {
             return {
                 user: {
-                    userId: queryResult.userId,
-                    name: queryResult.name,
-                    email: queryResult.email,
-                    joinDate: queryResult.joinDate,
-                    admin: queryResult.admin
+                    userId: queryResult[0].userId,
+                    name: queryResult[0].name,
+                    email: queryResult[0].email,
+                    joinDate: queryResult[0].joinDate,
+                    admin: queryResult[0].admin
                 },
                 token: await genToken(data.email)
             }
@@ -65,14 +65,14 @@ async function refreshTokenController(data) {
         throw new Error(error);
     }
 
-    if (queryResult && queryResult.email) {
+    if (queryResult[0] && queryResult[0].email) {
         return {
             user: {
-                userId: queryResult.userId,
-                name: queryResult.name,
-                email: queryResult.email,
-                joinDate: queryResult.joinDate,
-                admin: queryResult.admin
+                userId: queryResult[0].userId,
+                name: queryResult[0].name,
+                email: queryResult[0].email,
+                joinDate: queryResult[0].joinDate,
+                admin: queryResult[0].admin
             },
             token: await genToken(data)
         }
@@ -92,11 +92,11 @@ async function resetPasswordController(data) {
         throw new Error(error);
     }
 
-    if (queryResult && queryResult.email) {
+    if (queryResult[0] && queryResult[0].email) {
         try {
             await execQuery(
                 updatePassQuery,
-                [await getHash(data.password), queryResult.userId]
+                [await getHash(data.password), queryResult[0].userId]
             );
         } catch (error) {
             throw new Error(error);

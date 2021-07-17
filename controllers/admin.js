@@ -20,8 +20,8 @@ connection.connect();
 
 // queries
 const getUsersQuery = 'SELECT * FROM `users`;';
-const addUserQuery = 'INSERT INTO `users`(`userId`,`name`,`email`,`password`,`joinDate`) VALUES(?,?,?,?,?);';
-const updateUserQuery = 'UPDATE `users` SET `email`=?,`name`=? WHERE `userId`=?;';
+const addUserQuery = 'INSERT INTO `users`(`userId`,`name`,`email`,`password`,`joinDate`,`admin`) VALUES(?,?,?,?,?,?);';
+const updateUserQuery = 'UPDATE `users` SET `email`=?,`name`=?,`admin`=? WHERE `userId`=?;';
 const deleteUserQuery = 'DELETE FROM `users` WHERE `userId`=?;';
 
 /** Admin - get all users */
@@ -39,7 +39,7 @@ async function addNewUserController(data) {
     try {
         await execQuery(
             addUserQuery,
-            [await genUUID(), data.name, data.email, await getHash(data.password), new Date()]
+            [await genUUID(), data.name, data.email, await getHash(data.password), new Date(), data.admin]
         );
     } catch (error) {
         throw new Error(error);
@@ -49,10 +49,11 @@ async function addNewUserController(data) {
 
 /** Admin - update user email, name */
 async function updateUserController(data) {
+    console.log(data);
     try {
         await execQuery(
             updateUserQuery,
-            [data.name, data.email, data.userId]
+            [data.email, data.name, data.admin, data.userId]
         );
     } catch (error) {
         throw new Error(error);
